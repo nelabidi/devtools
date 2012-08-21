@@ -90,11 +90,21 @@ namespace vsxa2p
             {
                 if (p.Name.IndexOf(processPath, StringComparison.CurrentCultureIgnoreCase) != -1)
                 {
-                    objDbg.DetachAll();
-                    //wait for the debugger to detach from any process
-                    System.Threading.Thread.Sleep(200);
+                    if (objDbg.DebuggedProcesses.Count > 0)
+                    {
+                        foreach (EnvDTE.Process p2 in objDbg.DebuggedProcesses)
+                        {
+                            if (p2.Name.IndexOf(processPath, StringComparison.CurrentCultureIgnoreCase) != -1)
+                            { 
+                                //already attached to the process
+                                return;
+                            }
+                        }
+                        //detach from any process
+                        objDbg.DetachAll();
+                        System.Threading.Thread.Sleep(200);
+                    }
                     p.Attach();
-
                     return;
                 }
             }
