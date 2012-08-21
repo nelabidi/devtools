@@ -15,8 +15,12 @@ using System.Collections.Generic;
 using System.Text;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using System.Reflection;
 
 using EnvDTE;
+using EnvDTE80;
+
+
 
 namespace vsxa2p
 {
@@ -45,12 +49,20 @@ namespace vsxa2p
             IEnumMoniker mon;
             IMoniker[] lst = new IMoniker[1];
             Object vcObject = null;
+            int retVal;
             
-            // find the File moniker object
-
-            CreateBindCtx(0, out ctx);
+            // find the File moniker object in the ROT running object table
+            // When an instance of VS Express is running and a solution is open it creates a Solution object
+            // and register it in the ROT
+            retVal = CreateBindCtx(0, out ctx);
+            if (retVal != 0)
+            {
+                Console.WriteLine("Error: CreateBindCtx failed with error " + retVal);
+                return;
+            }
             ctx.GetRunningObjectTable(out table);
             table.EnumRunning(out mon);
+            //walk through the table
             while (mon.Next(1, lst, IntPtr.Zero) == 0)
             {
                 string displayName;
@@ -62,22 +74,34 @@ namespace vsxa2p
                     break;
                 }
             }
-            //object found
-            if (vcObject != null)
+            //object found ?
+            if (vcObject == null)
             {
-                Solution objSol = (Solution)vcObject;
-                Debugger objDbg = objSol.DTE.Debugger;
-                //find the process and attach to it
-                foreach (EnvDTE.Process p in objDbg.LocalProcesses)
-                {
-                    if (p.Name.IndexOf(processPath, StringComparison.CurrentCultureIgnoreCase) != -1)
-                    {
-                        p.Attach();
-                        break;
-                    }
-                }
-            
+                Console.WriteLine("Error: solution not found " + solPath);
+                return;
             }
+            Solution objSol = (Solution)vcObject;
+            DTE objDTE = objSol.DTE;
+            Debugger objDbg = objSol.DTE.Debugger;
+              
+
+            //find the process and attach to it
+            foreach (EnvDTE.Process p in objDbg.LocalProcesses)
+            {
+                if (p.Name.IndexOf(processPath, StringComparison.CurrentCultureIgnoreCase) != -1)
+                {
+                    objDbg.DetachAll();
+                    //wait for the debugger to detach from any process
+                    System.Threading.Thread.Sleep(200);
+                    p.Attach();
+
+                    return;
+                }
+            }
+            
+            Console.WriteLine("Error: process not found " + processPath);
+            return;
+                
         }
 
     }
