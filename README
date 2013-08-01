@@ -1,17 +1,17 @@
-vsxa2p is a small tool I use it in VS2008 C# Express as an external tool to be able to attach to a running process for debugging, helpful if you are making a DLL ( a pluging for example to some program ..etc)
+vsxa2p is a small tool I use it in VS2008 C# Express as an external tool to be able to attach to a running process for debugging, helpful if you are making a DLL ( a plugin for example...etc)
 
 HOW IT WORKS:
 -------------
-the trick is to look-up a file moniker registered in the ROT (Running Object Table) as a EnvDTE.Solution object, getting that object we can get the EnvDTE.DTE object, than all what we need to do is to lookup the process we need to attach to using EnvDTE.Debugger and attach the current open solution to it.
+the trick is to look-up a file moniker registered in the ROT (Running Object Table) as a EnvDTE.Solution object, getting that object we can get the EnvDTE.DTE object, than all what we need to do is to lookup the process we need to attach to using EnvDTE.Debugger and attach the current instance of VS2008 C# Express to it.
 
 INSTALLATION:
 -------------
-1. download and compile the source code to some folder.
-2. in VS2008 C# express add an external tool and specify the the full or partial path to the process (.EXE file name) you
+1. Download and compile the source code to some folder.
+2. In VS2008 C# express add an external tool and specify the the full or partial path to the process (.EXE file name) you
    want to attach to and the solution file name.
    example: vsxa2p $(SolutionFileName)   dir\\process.exe
-3. assign a Keyboard shortuct to the tool  
-4. done !
+3. Assign a Keyboard shortuct to the tool  
+4. Done !
 
 
 You are free to modify the tool to fit your need, please leave a comment or any suggestion.
