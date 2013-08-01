@@ -1,4 +1,4 @@
-vsxa2p is a small tool I use itin VS2008 C# Express as an external tool to be able to attach to a running process for debugging, helpful if you are making a DLL ( a pluging for example to some program ..etc)
+vsxa2p is a small tool I use it in VS2008 C# Express as an external tool to be able to attach to a running process for debugging, helpful if you are making a DLL ( a pluging for example to some program ..etc)
 
 HOW IT WORKS:
 -------------
